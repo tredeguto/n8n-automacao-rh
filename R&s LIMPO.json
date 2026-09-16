@@ -1,0 +1,696 @@
+{
+  "name": "R&S - Triagem e Analise de Candidatos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vaga_designer",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        96
+      ],
+      "id": "9e085540-8ec1-45ae-b3cd-1ecc8fbe51fd",
+      "name": "Webhook",
+      "webhookId": "YOUR_WEBHOOK_ID_HERE",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "84c083f9-0e05-4d16-aa60-5c9ac316559a",
+              "name": "Nome",
+              "value": "={{ $json.body.data.fields[0].value }}",
+              "type": "string"
+            },
+            {
+              "id": "6f8b8912-a2cb-445b-b3ec-e743dace3b89",
+              "name": "Telefone",
+              "value": "={{ $json.body.data.fields[2].value }}",
+              "type": "string"
+            },
+            {
+              "id": "ce43c556-5039-45db-aee2-243024dd1a77",
+              "name": "e-mail",
+              "value": "={{ $json.body.data.fields[1].label }}",
+              "type": "string"
+            },
+            {
+              "id": "e5c65aef-beb8-4778-9841-68de63a18fb6",
+              "name": "Linkedin",
+              "value": "={{ $json.body.data.fields[3].value }}",
+              "type": "string"
+            },
+            {
+              "id": "0cd36846-3c99-485d-9e4c-f86ed8b76c21",
+              "name": "Portifolio",
+              "value": "={{ $json.body.data.fields[4].value }}",
+              "type": "string"
+            },
+            {
+              "id": "7d101552-8c02-475d-ab6f-11aeb07b1e18",
+              "name": "Curriculo",
+              "value": "={{ $json.body.data.fields[7].value[0].url }}",
+              "type": "string"
+            },
+            {
+              "id": "d366cb68-e039-4ce5-b264-809c780cb4fb",
+              "name": "HAB_DesignGrafico",
+              "value": "={{ $json.body.data.fields[5].options[0].text }}",
+              "type": "string"
+            },
+            {
+              "id": "b79d65c5-4422-4260-8208-6ee0337273e6",
+              "name": "HAB_MarketinDigital",
+              "value": "={{ $json.body.data.fields[5].options[1].text }}",
+              "type": "string"
+            },
+            {
+              "id": "d3bd6aba-598f-4319-8458-76bc1e3b2cca",
+              "name": "HAB_EdicaodeVideo",
+              "value": "={{ $json.body.data.fields[5].options[3].text }}",
+              "type": "string"
+            },
+            {
+              "id": "296edbe1-1d3e-4e0b-9413-e3db84502fd6",
+              "name": "HAB_Copywriting",
+              "value": "={{ $json.body.data.fields[5].options[4].text }}",
+              "type": "string"
+            },
+            {
+              "id": "42f50c8d-c125-4210-b5e5-7d240a3083e4",
+              "name": "=qtd_habilidades",
+              "value": "={{ $json.body.data.fields[5].value ? $json.body.data.fields[5].value.length : 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "8e30db83-f2e3-48c4-a3f5-40255bab4e33",
+              "name": "aderencia_declarada",
+              "value": "={{ $json.body.data.fields[5].value.length === 4 ? 'Aderência Total (4/4 requisitos)' : $json.body.data.fields[5].value.length === 3 ? 'Aderência Alta (3/4 requisitos)' : $json.body.data.fields[5].value.length >= 1 ? 'Aderência Parcial (1-2 requisitos)' : 'Não informado no formulário' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        96
+      ],
+      "id": "ef0806b8-8e89-4091-98fc-d4b29a5fc2ba",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8ba14ecc-76e1-4834-b145-c5b485ecfe06",
+              "leftValue": "={{ $json.qtd_habilidades }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "4a8d22b5-5222-4998-b5f0-5e3bd73e384d",
+              "leftValue": "={{ $json.Curriculo }}",
+              "rightValue": "pdf",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        96
+      ],
+      "id": "680701f4-4d5a-4fe3-ab2b-8da8f7e5791c",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        672,
+        192
+      ],
+      "id": "d1ce6e01-6214-4d59-a3b7-0393bb81d710",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "content": "## Recebimento de candidatos\n**Forms Tally** \n**Edit Fields** separa os dados e define as habilidades\n**if** separa quem tem mais habilidades\n",
+        "height": 288,
+        "width": 592,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -16,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "bea5c3b1-2a56-4313-a9d7-ff7a130c828b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Pouca habilidade",
+        "height": 208,
+        "width": 320,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        560,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "602d37c7-9191-4442-a43f-2aa4552bdf4a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.Curriculo }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        672,
+        0
+      ],
+      "id": "13296266-9837-4fc4-9bb2-af13aa16311c",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        0
+      ],
+      "id": "f7977a40-63e4-4dae-8bba-b17fa2b958f4",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "content": "## Extração dos dados do currículo anexado \n",
+        "width": 480,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        576,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "0741c134-bac8-4c05-b581-ff4c604f918b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Nome: {{ $('Edit Fields').item.json.Nome }}\nCurriculo: {{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Contexto\nVocê é um especialista em recrutamento e seleção focado em automação, inteligência artificial, publicidade e e-learning.\n\n# Descrição da vaga\nCargo: Designer Gráfico e Criativo (Especialista em IA Generativa)\nRegime: Remoto / Híbrido\n\nRequisitos obrigatórios:\n- Experiência prática com engenharia de prompts e geração de imagens via IA (Midjourney, DALL-E, Stable Diffusion, Ideogram)\n- Domínio de Design Gráfico, composição, tipografia, teoria das cores e Pacote Adobe (Photoshop/Illustrator) ou Canva\n- Criação e desdobramento de key visuals e peças para redes sociais e anúncios digitais\n\nDiferenciais (Habilidades complementares):\n- Conhecimentos em edição de vídeo (Premiere / After Effects)\n- Noções de Copywriting e estruturação de mensagens publicitárias\n- Familiaridade com automações no-code (Make, n8n)\n- Experiência no desenvolvimento de materiais gráficos para e-Learning (EAD)\n\nPerfil esperado:\nProfissional altamente criativo, com forte senso estético e capacidade de conectar o design tradicional às novas tecnologias de geração de imagem e automação.\n\n# Tarefa\nAvalie o currículo e os dados do formulário do candidato e retorne uma análise estruturada.\n\n## Critérios de classificação\n- Score maior ou igual a 8.0 → classificação: aprovado\n- Score maior ou igual a 6.0 e menor que 8.0 → classificação: revisar\n- Score menor que 6.0 → classificação: reprovado\n\n## Instruções de avaliação\n- Avalie a aderência técnica aos requisitos obrigatórios e diferenciais.\n- Cruze o que o candidato declarou no formulário com as evidências reais de projetos ou histórico técnico presentes no currículo.\n- A quantidade de habilidades declaradas no formulário serve como indicador inicial, mas **NÃO** deve eliminar o candidato de forma automática se o currículo demonstrar sólida experiência prática.\n- Seja criterioso — score acima de 8.0 deve ser atribuído apenas a perfis com forte domínio em IA Generativa e Design.\n\n# Restrições\n- Responda **APENAS** com JSON válido.\n- **Não** inclua texto antes ou depois do JSON.\n- **Não** use markdown nos campos de texto dentro do JSON.\n- Escreva todos os textos em português.\n- **Não** invente informações que não estão no currículo ou no formulário.\n\n# Formato de saída\n{\n \"classificação\": \"aprovado\",\n \"score\": 8.5,\n \"justificativa\": \"texto corrido em 2-3 linhas explicando o score e a aderência\",\n \"pontos_fortes\": [\"ponto 1\", \"ponto 2\", \"ponto 3\"],\n \"pontos_atencao\": [\"ponto 1\", \"ponto 2\"],\n \"perguntas_entrevista\": [\"pergunta 1\", \"pergunta 2\"],\n \"feedback_candidato\": \"Texto empático e profissional de 2 parágrafos formatado para ser enviado ao candidato sobre o resultado do seu perfil\"\n}\n\n---\n\n# Dados do candidato\nNome: {{ $('Edit Fields').item.json.Nome }}\nAderência Declarada (Formulário): {{ $('Edit Fields').item.json.aderencia_declarada }} {{ $('Edit Fields').item.json.qtd_habilidades }} de 4 habilidades)\nCurrículo:{{ $json.text }} \nTelefone:{{ $('Edit Fields').item.json.Telefone }}\ne-mail:{{ $('Webhook').item.json.body.data.fields[1].value }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1120,
+        0
+      ],
+      "id": "79bd6196-3fd9-4ded-8837-a892a8948024",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1136,
+        240
+      ],
+      "id": "db555b57-b281-4faf-acb4-7c62d8faf680",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_CREDENTIALS_ID",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n \"classificação\": \"aprovado\",\n \"score\": 8.5,\n \"justificativa\": \"texto corrido em 2-3 linhas explicando o score e a aderência\",\n \"pontos_fortes\": [\"ponto 1\", \"ponto 2\", \"ponto 3\"],\n \"pontos_atencao\": [\"ponto 1\", \"ponto 2\"],\n \"perguntas_entrevista\": [\"pergunta 1\", \"pergunta 2\"],\n \"feedback_candidato\": \"Texto empático e profissional de 2 parágrafos formatado para ser enviado ao candidato sobre o resultado do seu perfil\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        240
+      ],
+      "id": "ed412c64-aba5-4431-a37f-8e5b868b904a",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "content": "## Análise de Agente Recrutador ##\n",
+        "height": 464,
+        "width": 352,
+        "color": "#883572"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1056,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "afbe321c-1802-473e-8980-e1dec340300c",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output['classificação'] }}",
+                    "rightValue": "revisar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d5dcd6e2-2042-411a-9ec9-d8781f6e8861"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Revisar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7c6dd44d-8096-49ee-86cd-411abce26e00",
+                    "leftValue": "={{ $json.output['classificação'] }}",
+                    "rightValue": "aprovado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Aprovado"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3703f0ee-1b88-4825-b6fe-59234592b240",
+                    "leftValue": "={{ $json.output['classificação'] }}",
+                    "rightValue": "reprovado",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reprovado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1472,
+        -16
+      ],
+      "id": "1899fcea-5ce4-466b-935c-774048027490",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.data.fields[1].value }}",
+        "subject": "Seleção de Designer de Marketing (Foco em IA)",
+        "message": "=<!DOCTYPE html> <html lang=\"pt-BR\"> <head> <meta charset=\"UTF-8\"> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> <title>Agradecimento</title> </head> <body style=\"margin: 0; padding: 0; background-color: #f4f6f9; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"table-layout: fixed;\"> <tr> <td align=\"center\" style=\"padding: 40px 15px;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);\"> <!-- Header --> <tr> <td style=\"background-color: #0f172a; padding: 30px; text-align: center;\"> <h1 style=\"color: #ffffff; font-size: 22px; margin: 0; font-weight: 600; letter-spacing: 0.5px;\">Talent Acquisition</h1> <p style=\"color: #94a3b8; font-size: 13px; margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 1px;\">Marketing Digital &amp; IA</p> </td> </tr> <!-- Corpo do E-mail --> <tr> <td style=\"padding: 40px 30px; color: #334155; font-size: 15px; line-height: 1.6;\"> <p style=\"margin-top: 0; font-size: 17px; font-weight: 600; color: #0f172a;\"> Olá, {{ $('Edit Fields').item.json.Nome }}! </p> <p> Agradecemos muito pelo seu interesse em fazer parte do nosso time e por dedicar seu tempo para participar do processo seletivo para a vaga de <strong>Designer Gráfico e Criativo (IA)</strong>. </p> <p> Analisamos cuidadosamente seu perfil e histórico profissional. No momento, optamos por seguir com candidatos cujas experiências técnicas estão mais diretamente alinhadas às demandas específicas desta posição no presente momento. </p> <!-- Card de Banco de Talentos --> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"margin: 25px 0; background-color: #f8fafc; border-left: 4px solid #64748b; border-radius: 4px; padding: 20px;\"> <tr> <td> <p style=\"margin: 0 0 6px 0; font-size: 14px; font-weight: 600; color: #0f172a;\"> Seu perfil continuará em nosso banco de talentos! </p> <p style=\"margin: 0; font-size: 13px; color: #475569;\"> Guardaremos suas informações para oportunidades futuras. Você continuará elegível e super bem-vindo(a) para se candidatar em nossas próximas seleções. </p> </td> </tr> </table> <p style=\"margin-bottom: 0;\"> Desejamos muito sucesso em sua jornada profissional e esperamos manter contato para novas oportunidades. </p> </td> </tr> <!-- Assinatura / Rodapé --> <tr> <td style=\"padding: 0 30px 30px 30px; color: #475569; font-size: 14px; border-top: 1px solid #f1f5f9; padding-top: 20px;\"> <p style=\"margin: 0; font-weight: 600; color: #0f172a;\">Atenciosamente,</p> <p style=\"margin: 4px 0 0 0; color: #64748b;\"><strong>Time de Talent Acquisition</strong></p> </td> </tr> </table> </td> </tr> </table> </body> </html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1696,
+        160
+      ],
+      "id": "c3f31d64-cea6-4ca9-b71a-3ce28af8b2bd",
+      "name": "Send a message",
+      "webhookId": "YOUR_WEBHOOK_ID_HERE",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.data.fields[1].value }}",
+        "subject": "Próximo passo — Designer Gráfico e Criativo (IA)",
+        "message": "=<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n <meta charset=\"UTF-8\">\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n <title>Próximo Passo</title>\n</head>\n<body style=\"margin: 0; padding: 0; background-color: #f4f6f9; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;\">\n <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"table-layout: fixed;\">\n <tr>\n <td align=\"center\" style=\"padding: 40px 15px;\">\n <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);\">\n \n <!-- Header -->\n <tr>\n <td style=\"background-color: #0f172a; padding: 30px; text-align: center;\">\n <h1 style=\"color: #ffffff; font-size: 22px; margin: 0; font-weight: 600; letter-spacing: 0.5px;\">Talent Acquisition</h1>\n <p style=\"color: #94a3b8; font-size: 13px; margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 1px;\">Marketing Digital &amp; IA</p>\n </td>\n </tr>\n\n <!-- Corpo do E-mail -->\n <tr>\n <td style=\"padding: 40px 30px; color: #334155; font-size: 15px; line-height: 1.6;\">\n <p style=\"margin-top: 0; font-size: 17px; font-weight: 600; color: #0f172a;\">\n Olá, {{ $('Edit Fields').item.json.Nome }}!\n </p>\n \n <p>\n Seu perfil foi avaliado e ficamos muito impressionados com sua experiência em <strong>Design e IA Generativa</strong>. Temos grande interesse em avançar no seu processo seletivo.\n </p>\n \n <p>\n Reservamos um horário em nossa agenda para realizarmos uma conversa de 30 minutos, conhecer melhor suas produções e apresentar mais detalhes do projeto.\n </p>\n\n <!-- Card de Detalhes da Agendamento -->\n <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"margin: 25px 0; background-color: #f8fafc; border-left: 4px solid #2563eb; border-radius: 4px; padding: 20px;\">\n <tr>\n <td>\n <p style=\"margin: 0 0 8px 0; font-size: 12px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 0.5px;\">\n Detalhes da Entrevista\n </p>\n <p style=\"margin: 0 0 6px 0; font-size: 15px; font-weight: 600; color: #0f172a;\">\n Seleção de Designer de Marketing\n </p>\n <p style=\"margin: 0 0 4px 0; font-size: 14px; color: #475569;\">\n <strong>Data e Hora:</strong> {{ $json.start.dateTime }}\n </p>\n <p style=\"margin: 0; font-size: 13px; color: #64748b;\">\n <strong>Fuso Horário:</strong> America/Sao_Paulo\n </p>\n </td>\n </tr>\n </table>\n\n <!-- Botão do Google Meet -->\n <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"margin: 30px 0 20px 0;\">\n <tr>\n <td align=\"center\">\n <a href=\"{{ $json.hangoutLink ? $json.hangoutLink : 'https://meet.google.com/abc-defg-hij' }}\" target=\"_blank\" style=\"display: inline-block; padding: 14px 28px; background-color: #2563eb; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 6px; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);\">\n Acessar Reunião no Google Meet\n </a>\n </td>\n </tr>\n </table>\n\n <p style=\"font-size: 13px; color: #64748b; text-align: center; margin-bottom: 25px;\">\n Link direto: <a href=\"{{ $json.hangoutLink ? $json.hangoutLink : 'https://meet.google.com/abc-defg-hij' }}\" style=\"color: #2563eb;\">{{ $json.hangoutLink ? $json.hangoutLink : 'https://meet.google.com/abc-defg-hij' }}</a>\n </p>\n\n <p style=\"margin-bottom: 0;\">\n Qualquer dúvida ou necessidade de reagendamento, basta responder a este e-mail.\n </p>\n </td>\n </tr>\n\n <!-- Assinatura / Rodapé -->\n <tr>\n <td style=\"padding: 0 30px 30px 30px; color: #475569; font-size: 14px; border-top: 1px solid #f1f5f9; padding-top: 20px;\">\n <p style=\"margin: 0; font-weight: 600; color: #0f172a;\">Atenciosamente,</p>\n <p style=\"margin: 4px 0 0 0; color: #64748b;\"><strong>Time de Talent Acquisition</strong></p>\n </td>\n </tr>\n \n </table>\n </td>\n </tr>\n </table>\n</body>\n</html>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2144,
+        -96
+      ],
+      "id": "e1665036-83be-4d80-8e32-689d48908807",
+      "name": "Send a message1",
+      "webhookId": "YOUR_WEBHOOK_ID_HERE",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIALS_ID",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1696,
+        -96
+      ],
+      "id": "bf03ac3a-3216-45bd-bfe8-87016b270579",
+      "name": "Wait",
+      "webhookId": "YOUR_WEBHOOK_ID_HERE"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "recruiter@example.com",
+          "mode": "list",
+          "cachedResultName": "recruiter@example.com"
+        },
+        "start": "=2026-09-21T10:00:00-03:00",
+        "end": "=2026-09-21T10:30:00-03:00",
+        "additionalFields": {
+          "attendees": [
+            "={{ $('Webhook').item.json.body.data.fields[1].value }}"
+          ],
+          "description": "=Candidato: {{ $('Edit Fields').item.json.Nome }} Score IA: {{ $('AI Agent').item.json.output.score }} Justificativa: {{ $('AI Agent').item.json.output.justificativa }} Pontos Fortes: {{ $('AI Agent').item.json.output.pontos_fortes }} Perguntas Sugeridas: {{ $('AI Agent').item.json.output.perguntas_entrevista }}",
+          "summary": "=Entrevista | {{ $('Edit Fields').item.json.Nome }} - Designer Gráfico (IA)"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        1920,
+        -96
+      ],
+      "id": "671662d0-94bd-4acb-af0c-e1147ad8b9e1",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "YOUR_CALENDAR_CREDENTIALS_ID",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Definição dos aptos a entrevista",
+        "height": 272,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1408,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "71165fc2-d143-4ef7-b8ed-2fc6c30b6dfe",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Reprovado",
+        "height": 208,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1632,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "941a44b3-b33f-48a6-a376-7a5f87ab2577",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "height": 288,
+        "width": 512,
+        "color": "#1B5E13"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1824,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "2fad2e64-9097-43e9-896e-280db30efc56",
+      "name": "Sticky Note7"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Create an event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "43e9746f-5c43-4ccf-986d-d66b90e1983f",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "id": "RH_TRIAGEM_FLOW",
+  "tags": []
+}
